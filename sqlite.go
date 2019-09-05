@@ -151,3 +151,7 @@ func (db *DbProxy) QueryDoSelectAllOrder(table string, order string) *sql.Rows {
 func (db *DbProxy) QuerySelectFunc(table string, sfunc string, col string, haystack string, needle string) *sql.Rows {
 	return db.QueryPrepared(false, F("select %s(%s) from %s where %s = ?", sfunc, col, table, haystack), needle)
 }
+
+func (db *DbProxy) QueryDelete(table string, col string, search string) {
+	db.QueryPrepared(true, F("delete from %s where %s = ?", table, col), search)
+}

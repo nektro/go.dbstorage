@@ -17,7 +17,7 @@ type DbProxy struct {
 	db *sql.DB
 }
 
-func ConnectSqlite(path string) *DbProxy {
+func ConnectSqlite(path string) Database {
 	op := url.Values{}
 	op.Add("mode", "rwc")
 	op.Add("cache", "shared")
@@ -56,7 +56,7 @@ func (db *DbProxy) CreateTable(name string, pk []string, columns [][]string) {
 	}
 }
 
-func (db *DbProxy) CreateTableStruct(name string, v interface{}) *DbProxy {
+func (db *DbProxy) CreateTableStruct(name string, v interface{}) {
 	t := reflect.TypeOf(v)
 	cols := [][]string{}
 	for i := 0; i < t.NumField(); i++ {
@@ -67,7 +67,6 @@ func (db *DbProxy) CreateTableStruct(name string, v interface{}) *DbProxy {
 		}
 	}
 	db.CreateTable(name, []string{"id", "int primary key"}, cols)
-	return db
 }
 
 func (db *DbProxy) DoesTableExist(table string) bool {

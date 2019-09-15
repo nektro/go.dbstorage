@@ -2,7 +2,6 @@ package dbstorage
 
 import (
 	"database/sql"
-	"fmt"
 	"net/url"
 	"reflect"
 
@@ -54,7 +53,7 @@ func (db *DbProxy) DB() *sql.DB {
 func (db *DbProxy) CreateTable(name string, pk []string, columns [][]string) {
 	if !db.DoesTableExist(name) {
 		db.Query(true, F("create table %s(%s %s)", name, pk[0], pk[1]))
-		util.Log(fmt.Sprintf("Created table '%s'", name))
+		util.Log(F("Created table '%s'", name))
 	}
 	pti := db.QueryColumnList(name)
 	for _, col := range columns {

@@ -110,11 +110,9 @@ func (db *DbProxy) QueryTableInfo(table string) []PragmaTableInfo {
 
 func (db *DbProxy) QueryColumnList(table string) []string {
 	var result []string
-	rows := db.Query(false, F("pragma table_info(%s)", table))
 	for _, item := range db.QueryTableInfo(table) {
 		result = append(result, item.Name)
 	}
-	rows.Close()
 	return result
 }
 

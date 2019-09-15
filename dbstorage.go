@@ -13,7 +13,7 @@ type Database interface {
 	DoesTableExist(table string) bool
 	Query(modify bool, q string) *sql.Rows
 	QueryColumnList(table string) []string
-	QueryNextID(table string) int
+	QueryNextID(table string) int64
 	QueryPrepared(modify bool, q string, args ...interface{}) *sql.Rows
 	QueryDoSelectAll(table string) *sql.Rows
 	QueryDoSelect(table string, where string, search string) *sql.Rows

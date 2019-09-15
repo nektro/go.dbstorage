@@ -104,8 +104,8 @@ func (db *DbProxy) QueryColumnList(table string) []string {
 	return result
 }
 
-func (db *DbProxy) QueryNextID(table string) int {
-	result := 0
+func (db *DbProxy) QueryNextID(table string) int64 {
+	result := int64(0)
 	rows := db.Query(false, F("select id from %s order by id desc limit 1", table))
 	for rows.Next() {
 		rows.Scan(&result)

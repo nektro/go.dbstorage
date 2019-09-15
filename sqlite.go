@@ -17,6 +17,15 @@ type DbProxy struct {
 	db *sql.DB
 }
 
+type PragmaTableInfo struct {
+	CID        int
+	Name       string
+	Type       string
+	NotNull    bool
+	HasDefault bool
+	HasPK      bool
+}
+
 func ConnectSqlite(path string) Database {
 	op := url.Values{}
 	op.Add("mode", "rwc")
@@ -87,18 +96,23 @@ func (db *DbProxy) Query(modify bool, q string) *sql.Rows {
 	return rows
 }
 
+func (db *DbProxy) QueryTableInfo(table string) []PragmaTableInfo {
+	var result []PragmaTableInfo
+	rows := db.Query(false, F("pragma table_info(%s)", table))
+	for rows.Next() {
+		var v PragmaTableInfo
+		rows.Scan(&v.CID, &v.Name, &v.Type, &v.NotNull, &v.HasDefault, &v.HasPK)
+		result = append(result, v)
+	}
+	rows.Close()
+	return result
+}
+
 func (db *DbProxy) QueryColumnList(table string) []string {
 	var result []string
 	rows := db.Query(false, F("pragma table_info(%s)", table))
-	for rows.Next() {
-		var cid int
-		var name string
-		var typeV string
-		var notnull bool
-		var dfltValue string
-		var pk int
-		rows.Scan(&cid, &name, &typeV, &notnull, &dfltValue, &pk)
-		result = append(result, name)
+	for _, item := range db.QueryTableInfo(table) {
+		result = append(result, item.Name)
 	}
 	rows.Close()
 	return result

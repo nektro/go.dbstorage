@@ -66,7 +66,7 @@ func (db *DbProxy) CreateTableStruct(name string, v interface{}) {
 			cols = append(cols, []string{f.Tag.Get("json"), g})
 		}
 	}
-	db.CreateTable(name, []string{"id", "int primary key"}, cols)
+	db.CreateTable(name, []string{"id", "bigint primary key"}, cols)
 }
 
 func (db *DbProxy) DoesTableExist(table string) bool {

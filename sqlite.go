@@ -165,3 +165,58 @@ func (db *DbProxy) QuerySelectFunc(table string, sfunc string, col string, hayst
 func (db *DbProxy) QueryDelete(table string, col string, search string) {
 	db.QueryPrepared(true, F("delete from %s where %s = ?", table, col), search)
 }
+
+//
+
+//
+
+type sQueryBuilder struct {
+	d *DbProxy
+	q string
+	v []interface{}
+	m bool
+}
+
+func (db *DbProxy) Build() QueryBuilder {
+	qb := new(sQueryBuilder)
+	qb.d = db
+	return qb
+}
+
+func (qb *sQueryBuilder) Se(cols string) QueryBuilder {
+	qb.m = false
+	qb.q = qb.q + "select " + cols
+	return qb
+}
+
+func (qb *sQueryBuilder) Fr(table string) QueryBuilder {
+	qb.q = qb.q + " from " + table
+	return qb
+}
+func (qb *sQueryBuilder) Wh(col string, value string) QueryBuilder {
+	qb.q = qb.q + " where " + col + " = ?"
+	qb.v = append(qb.v, value)
+	return qb
+}
+
+func (qb *sQueryBuilder) An(col string, value string) QueryBuilder {
+	qb.q = qb.q + " and " + col + " = ?"
+	qb.v = append(qb.v, value)
+	return qb
+}
+
+func (qb *sQueryBuilder) Or(col string, order string) QueryBuilder {
+	qb.q = qb.q + " order by " + col + " " + order
+	return qb
+}
+
+func (qb *sQueryBuilder) Exe() *sql.Rows {
+	return qb.d.QueryPrepared(qb.m, qb.q, qb.v...)
+}
+
+func (qb *sQueryBuilder) Up(table string, col string, value string) QueryBuilder {
+	qb.m = true
+	qb.q = qb.q + "update " + table + " set " + col + " = ?"
+	qb.v = append(qb.v, value)
+	return qb
+}

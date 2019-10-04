@@ -29,3 +29,11 @@ func QueryHasRows(query *sql.Rows) bool {
 	query.Close()
 	return b
 }
+
+func Connect(engine string, path string) Database {
+	switch engine {
+	case "sqlite":
+		return ConnectSqlite(path)
+	}
+	return nil
+}

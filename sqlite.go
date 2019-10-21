@@ -59,7 +59,7 @@ func (db *DbProxy) CreateTable(name string, pk []string, columns [][]string) {
 	for _, col := range columns {
 		if !util.Contains(pti, col[0]) {
 			db.Query(true, F("alter table %s add %s %s", name, col[0], col[1]))
-			util.Logf("Added column '%s.%s'", name, col[0])
+			util.Log(F("Added column '%s.%s'", name, col[0]))
 		}
 	}
 }

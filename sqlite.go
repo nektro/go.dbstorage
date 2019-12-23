@@ -173,8 +173,10 @@ func (db *DbProxy) QueryDelete(table string, col string, search string) {
 type sQueryBuilder struct {
 	d *DbProxy
 	q string
-	v []interface{}
+	v []string
 	m bool
+	w [][3]string
+	o [][2]string
 }
 
 func (db *DbProxy) Build() QueryBuilder {
@@ -193,25 +195,45 @@ func (qb *sQueryBuilder) Fr(table string) QueryBuilder {
 	qb.q = qb.q + " from " + table
 	return qb
 }
-func (qb *sQueryBuilder) Wh(col string, value string) QueryBuilder {
-	qb.q = qb.q + " where " + col + " = ?"
-	qb.v = append(qb.v, value)
+
+func (qb *sQueryBuilder) Wr(col string, op string, value string) QueryBuilder {
+	qb.w = append(qb.w, [3]string{col, op, value})
 	return qb
 }
 
-func (qb *sQueryBuilder) An(col string, value string) QueryBuilder {
-	qb.q = qb.q + " and " + col + " = ?"
-	qb.v = append(qb.v, value)
+func (qb *sQueryBuilder) Wh(col string, value string) QueryBuilder {
+	qb.Wr(col, "=", value)
 	return qb
 }
 
 func (qb *sQueryBuilder) Or(col string, order string) QueryBuilder {
-	qb.q = qb.q + " order by " + col + " " + order
+	qb.o = append(qb.o, [2]string{col, order})
 	return qb
 }
 
 func (qb *sQueryBuilder) Exe() *sql.Rows {
-	return qb.d.QueryPrepared(qb.m, qb.q, qb.v...)
+	vals := []string{}
+	vals = append(vals, qb.v...)
+	for i, item := range qb.w {
+		if i == 0 {
+			qb.q += " where " + item[0] + " " + item[1] + " ?"
+		} else {
+			qb.q += " and " + item[0] + " " + item[1] + " ?"
+		}
+		vals = append(vals, item[2])
+	}
+	for i, item := range qb.o {
+		if i == 0 {
+			qb.q += " order by " + item[0] + " " + item[1]
+		} else {
+			qb.q += ", " + item[0] + " " + item[1]
+		}
+	}
+	iva := make([]interface{}, len(vals))
+	for i, v := range vals {
+		iva[i] = v
+	}
+	return qb.d.QueryPrepared(qb.m, qb.q, iva...)
 }
 
 func (qb *sQueryBuilder) Up(table string, col string, value string) QueryBuilder {

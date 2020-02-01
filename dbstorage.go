@@ -2,6 +2,7 @@ package dbstorage
 
 import (
 	"database/sql"
+	"sync"
 )
 
 type Database interface {
@@ -18,6 +19,7 @@ type Database interface {
 }
 
 type QueryBuilder interface {
+	Ins(table string) *sync.Mutex
 	Se(cols string) QueryBuilder
 	Fr(tabls string) QueryBuilder
 	Wr(col string, op string, value string) QueryBuilder

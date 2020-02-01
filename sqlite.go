@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"net/url"
 	"reflect"
+	"sync"
 
 	"github.com/nektro/go-util/util"
 
@@ -14,6 +15,7 @@ import (
 
 type DbProxy struct {
 	db *sql.DB
+	tl map[string]*sync.Mutex
 }
 
 type PragmaTableInfo struct {
@@ -35,7 +37,7 @@ func ConnectSqlite(path string) Database {
 	util.CheckErr(err)
 	db.SetMaxOpenConns(1)
 	util.DieOnError(db.Ping())
-	return &DbProxy{db}
+	return &DbProxy{db, map[string]*sync.Mutex{}}
 }
 
 func (db *DbProxy) Ping() error {
@@ -53,6 +55,7 @@ func (db *DbProxy) DB() *sql.DB {
 func (db *DbProxy) CreateTable(name string, pk []string, columns [][]string) {
 	if !db.DoesTableExist(name) {
 		db.Query(true, F("create table %s(%s %s)", name, pk[0], pk[1]))
+		db.tl[name] = new(sync.Mutex)
 		util.Log(F("Created table '%s'", name))
 	}
 	pti := db.QueryColumnList(name)
@@ -241,4 +244,8 @@ func (qb *sQueryBuilder) Up(table string, col string, value string) QueryBuilder
 	qb.q = qb.q + "update " + table + " set " + col + " = ?"
 	qb.v = append(qb.v, value)
 	return qb
+}
+
+func (qb *sQueryBuilder) Ins(table string) *sync.Mutex {
+	return qb.d.tl[table]
 }

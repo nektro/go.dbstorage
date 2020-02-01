@@ -22,6 +22,7 @@ type QueryBuilder interface {
 	Ins(table string) *sync.Mutex
 	Se(cols string) QueryBuilder
 	Fr(tabls string) QueryBuilder
+	WR(col string, op string, value string, raw bool) QueryBuilder
 	Wr(col string, op string, value string) QueryBuilder
 	Wh(col string, value string) QueryBuilder
 	Or(col string, order string) QueryBuilder

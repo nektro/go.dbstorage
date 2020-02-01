@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"net/url"
 	"reflect"
+	"strconv"
 	"sync"
 
 	"github.com/nektro/go-util/util"
@@ -178,7 +179,7 @@ type sQueryBuilder struct {
 	q string
 	v []string
 	m bool
-	w [][3]string
+	w [][4]string
 	o [][2]string
 }
 
@@ -199,8 +200,13 @@ func (qb *sQueryBuilder) Fr(table string) QueryBuilder {
 	return qb
 }
 
+func (qb *sQueryBuilder) WR(col string, op string, value string, raw bool) QueryBuilder {
+	qb.w = append(qb.w, [4]string{col, op, value, strconv.FormatBool(raw)})
+	return qb
+}
+
 func (qb *sQueryBuilder) Wr(col string, op string, value string) QueryBuilder {
-	qb.w = append(qb.w, [3]string{col, op, value})
+	qb.WR(col, "=", value, false)
 	return qb
 }
 
@@ -218,12 +224,20 @@ func (qb *sQueryBuilder) Exe() *sql.Rows {
 	vals := []string{}
 	vals = append(vals, qb.v...)
 	for i, item := range qb.w {
-		if i == 0 {
-			qb.q += " where " + item[0] + " " + item[1] + " ?"
+		if item[3] == "false" {
+			if i == 0 {
+				qb.q += " where " + item[0] + " " + item[1] + " ?"
+			} else {
+				qb.q += " and " + item[0] + " " + item[1] + " ?"
+			}
+			vals = append(vals, item[2])
 		} else {
-			qb.q += " and " + item[0] + " " + item[1] + " ?"
+			if i == 0 {
+				qb.q += " where " + item[0] + " " + item[1] + " " + item[2]
+			} else {
+				qb.q += " and " + item[0] + " " + item[1] + " " + item[2]
+			}
 		}
-		vals = append(vals, item[2])
 	}
 	for i, item := range qb.o {
 		if i == 0 {

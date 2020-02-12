@@ -54,9 +54,9 @@ func (db *DbProxy) DB() *sql.DB {
 }
 
 func (db *DbProxy) CreateTable(name string, pk []string, columns [][]string) {
+	db.tl[name] = new(sync.Mutex)
 	if !db.DoesTableExist(name) {
 		db.Query(true, F("create table %s(%s %s)", name, pk[0], pk[1]))
-		db.tl[name] = new(sync.Mutex)
 		util.Log(F("Created table '%s'", name))
 	}
 	pti := db.QueryColumnList(name)

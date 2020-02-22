@@ -36,3 +36,17 @@ func QueryHasRows(query *sql.Rows) bool {
 	query.Close()
 	return b
 }
+
+type Scannable interface {
+	Scan(rows *sql.Rows) Scannable
+}
+
+func ScanAll(qb QueryBuilder, s Scannable) []Scannable {
+	result := []Scannable{}
+	rows := qb.Exe()
+	for rows.Next() {
+		result = append(result, s.Scan(rows))
+	}
+	rows.Close()
+	return result
+}

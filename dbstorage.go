@@ -18,8 +18,11 @@ type Database interface {
 	QueryPrepared(modify bool, q string, args ...interface{}) *sql.Rows
 }
 
+var (
+	InsertsLock = new(sync.Mutex)
+)
+
 type QueryBuilder interface {
-	Ins(table string) *sync.Mutex
 	Se(cols string) QueryBuilder
 	Fr(tabls string) QueryBuilder
 	WR(col string, op string, value string, raw bool) QueryBuilder

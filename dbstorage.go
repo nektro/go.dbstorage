@@ -50,3 +50,13 @@ func ScanAll(qb QueryBuilder, s Scannable) []Scannable {
 	rows.Close()
 	return result
 }
+
+func ScanFirst(qb QueryBuilder, s Scannable) Scannable {
+	rows := qb.Exe()
+	defer rows.Close()
+	if !rows.Next() {
+		return nil
+	}
+	s = s.Scan(rows)
+	return s
+}

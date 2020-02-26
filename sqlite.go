@@ -172,12 +172,12 @@ func (db *DbProxy) QueryDelete(table string, col string, search string) {
 //
 
 type sQueryBuilder struct {
-	d *DbProxy
-	q string
-	v []string
-	m bool
-	w [][4]string
-	o [][2]string
+	d *DbProxy    // db
+	q string      // query string
+	v []string    // values
+	m bool        // modify
+	w [][4]string // where's
+	o [][2]string // order's
 }
 
 func (db *DbProxy) Build() QueryBuilder {

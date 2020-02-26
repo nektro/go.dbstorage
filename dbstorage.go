@@ -29,6 +29,8 @@ type QueryBuilder interface {
 	Wr(col string, op string, value string) QueryBuilder
 	Wh(col string, value string) QueryBuilder
 	Or(col string, order string) QueryBuilder
+	Lm(limit int64) QueryBuilder
+	Of(offset int64) QueryBuilder
 	Up(table string, col string, value string) QueryBuilder
 	//
 	Exe() *sql.Rows

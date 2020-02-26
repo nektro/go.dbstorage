@@ -178,6 +178,8 @@ type sQueryBuilder struct {
 	m bool        // modify
 	w [][4]string // where's
 	o [][2]string // order's
+	l int64       // limit
+	f int64       // offset
 }
 
 func (db *DbProxy) Build() QueryBuilder {
@@ -217,6 +219,16 @@ func (qb *sQueryBuilder) Or(col string, order string) QueryBuilder {
 	return qb
 }
 
+func (qb *sQueryBuilder) Lm(limit int64) QueryBuilder {
+	qb.l = limit
+	return qb
+}
+
+func (qb *sQueryBuilder) Of(offset int64) QueryBuilder {
+	qb.f = offset
+	return qb
+}
+
 func (qb *sQueryBuilder) Exe() *sql.Rows {
 	vals := []string{}
 	vals = append(vals, qb.v...)
@@ -242,6 +254,12 @@ func (qb *sQueryBuilder) Exe() *sql.Rows {
 		} else {
 			qb.q += ", " + item[0] + " " + item[1]
 		}
+	}
+	if qb.l > 0 {
+		qb.q += " limit " + strconv.FormatInt(qb.l, 10)
+	}
+	if qb.f > 0 {
+		qb.q += " offset " + strconv.FormatInt(qb.f, 10)
 	}
 	iva := make([]interface{}, len(vals))
 	for i, v := range vals {

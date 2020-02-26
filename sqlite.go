@@ -203,7 +203,7 @@ func (qb *sQueryBuilder) WR(col string, op string, value string, raw bool) Query
 }
 
 func (qb *sQueryBuilder) Wr(col string, op string, value string) QueryBuilder {
-	qb.WR(col, "=", value, false)
+	qb.WR(col, op, value, false)
 	return qb
 }
 

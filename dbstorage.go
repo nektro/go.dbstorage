@@ -3,7 +3,17 @@ package dbstorage
 import (
 	"database/sql"
 	"sync"
+
+	"github.com/spf13/pflag"
 )
+
+var (
+	StatementDebug bool
+)
+
+func init() {
+	pflag.BoolVar(&StatementDebug, "dbstorage-debug-sql", false, "Enable this flag to print all executed SQL statements.")
+}
 
 type Database interface {
 	Ping() error

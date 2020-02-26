@@ -2,6 +2,7 @@ package dbstorage
 
 import (
 	"database/sql"
+	"fmt"
 	"net/url"
 	"reflect"
 	"strconv"
@@ -264,6 +265,9 @@ func (qb *sQueryBuilder) Exe() *sql.Rows {
 	iva := make([]interface{}, len(vals))
 	for i, v := range vals {
 		iva[i] = v
+	}
+	if StatementDebug {
+		fmt.Println("---", qb.q)
 	}
 	return qb.d.QueryPrepared(qb.m, qb.q, iva...)
 }

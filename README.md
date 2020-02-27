@@ -1,2 +1,2 @@
 # go.dbstorage
- Dynamic SQL library for Go
+Dynamic SQL library for Go

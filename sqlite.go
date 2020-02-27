@@ -293,3 +293,8 @@ func (qb *sQueryBuilder) Ins(table string, values ...interface{}) Executable {
 	}
 	return qb
 }
+
+func (qb *sQueryBuilder) Del(table string) QueryBuilder {
+	qb.q += "delete from " + table
+	return qb
+}

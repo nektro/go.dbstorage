@@ -1,10 +1,12 @@
 package dbstorage
 
 import (
+	"bytes"
 	"database/sql"
 	"fmt"
 	"net/url"
 	"reflect"
+	"runtime/debug"
 	"strconv"
 
 	"github.com/nektro/go-util/util"
@@ -267,7 +269,17 @@ func (qb *sQueryBuilder) Exe() *sql.Rows {
 		iva[i] = v
 	}
 	if StatementDebug {
-		fmt.Println("---", qb.q)
+		st := bytes.Split(debug.Stack(), []byte("\n"))
+		for _, item := range st {
+			if item[0] != '\t' {
+				continue
+			}
+			if bytes.Contains(item, []byte("src/runtime/debug")) || bytes.Contains(item, []byte("github.com/nektro/go.dbstorage")) {
+				continue
+			}
+			fmt.Println("---", string(item[1:]), "\t", "-", qb.q)
+			break
+		}
 	}
 	return qb.d.QueryPrepared(qb.m, qb.q, iva...)
 }

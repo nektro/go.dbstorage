@@ -2,6 +2,7 @@ package dbstorage
 
 import "database/sql"
 
+// Database represents an active db connection
 type Database interface {
 	Ping() error
 	Close() error
@@ -36,6 +37,7 @@ type Executable interface {
 	Exe() *sql.Rows
 }
 
+// Scannable can take in Rows and return an object
 type Scannable interface {
 	Scan(rows *sql.Rows) Scannable
 }

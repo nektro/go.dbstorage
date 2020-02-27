@@ -292,7 +292,7 @@ func (qb *sQueryBuilder) Up(table string, col string, value string) QueryBuilder
 	return qb
 }
 
-func (qb *sQueryBuilder) Ins(table string, values ...interface{}) QueryBuilder {
+func (qb *sQueryBuilder) Ins(table string, values ...interface{}) Executable {
 	qb.m = true
 	qb.q = qb.q + "insert into " + table + " values (" + strings.Join(strings.Split(strings.Repeat("?", len(values)), ""), ",") + ")"
 	for _, item := range values {

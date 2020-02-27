@@ -27,9 +27,9 @@ type QueryBuilder interface {
 	//
 	Up(table string, col string, value string) QueryBuilder
 	//
-	Ins(table string, values ...interface{}) QueryBuilder
+	Ins(table string, values ...interface{}) Executable
 	//
-	Exe() *sql.Rows
+	Executable
 }
 
 // Executable is any object who represents a query that can be called on to produce a sql.Rows

@@ -160,6 +160,10 @@ func (db *DbProxy) QueryDelete(table string, col string, search string) {
 	db.QueryPrepared(true, F("delete from %s where %s = ?", table, col), search)
 }
 
+func (db *DbProxy) DropTable(name string) {
+	db.QueryPrepared(true, "drop table if exists "+name)
+}
+
 //
 
 //

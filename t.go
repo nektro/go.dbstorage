@@ -13,6 +13,7 @@ type Database interface {
 	QueryColumnList(table string) []string
 	QueryNextID(table string) int64
 	QueryPrepared(modify bool, q string, args ...interface{}) *sql.Rows
+	DropTable(name string)
 }
 
 type QueryBuilder interface {

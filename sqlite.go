@@ -183,12 +183,12 @@ func (db *DbProxy) Build() QueryBuilder {
 
 func (qb *sQueryBuilder) Se(cols string) QueryBuilder {
 	qb.m = false
-	qb.q = qb.q + "select " + cols
+	qb.q += qb.q + "select " + cols
 	return qb
 }
 
 func (qb *sQueryBuilder) Fr(table string) QueryBuilder {
-	qb.q = qb.q + " from " + table
+	qb.q += qb.q + " from " + table
 	return qb
 }
 
@@ -276,14 +276,14 @@ func (qb *sQueryBuilder) Exe() *sql.Rows {
 
 func (qb *sQueryBuilder) Up(table string, col string, value string) QueryBuilder {
 	qb.m = true
-	qb.q = qb.q + "update " + table + " set " + col + " = ?"
+	qb.q += qb.q + "update " + table + " set " + col + " = ?"
 	qb.v = append(qb.v, value)
 	return qb
 }
 
 func (qb *sQueryBuilder) Ins(table string, values ...interface{}) Executable {
 	qb.m = true
-	qb.q = qb.q + "insert into " + table + " values (" + strings.Join(strings.Split(strings.Repeat("?", len(values)), ""), ",") + ")"
+	qb.q += qb.q + "insert into " + table + " values (" + strings.Join(strings.Split(strings.Repeat("?", len(values)), ""), ",") + ")"
 	for _, item := range values {
 		qb.v = append(qb.v, fmt.Sprintf("%v", item))
 	}

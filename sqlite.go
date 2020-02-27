@@ -8,6 +8,7 @@ import (
 	"reflect"
 	"runtime/debug"
 	"strconv"
+	"strings"
 
 	"github.com/nektro/go-util/util"
 
@@ -288,5 +289,14 @@ func (qb *sQueryBuilder) Up(table string, col string, value string) QueryBuilder
 	qb.m = true
 	qb.q = qb.q + "update " + table + " set " + col + " = ?"
 	qb.v = append(qb.v, value)
+	return qb
+}
+
+func (qb *sQueryBuilder) Ins(table string, values ...interface{}) QueryBuilder {
+	qb.m = true
+	qb.q = qb.q + "insert into " + table + " values (" + strings.Join(strings.Split(strings.Repeat("?", len(values)), ""), ",") + ")"
+	for _, item := range values {
+		qb.v = append(qb.v, fmt.Sprintf("%v", item))
+	}
 	return qb
 }

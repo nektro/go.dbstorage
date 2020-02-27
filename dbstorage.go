@@ -44,6 +44,8 @@ type QueryBuilder interface {
 	//
 	Up(table string, col string, value string) QueryBuilder
 	//
+	Ins(table string, values ...interface{}) QueryBuilder
+	//
 	Exe() *sql.Rows
 }
 

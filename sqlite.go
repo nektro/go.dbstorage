@@ -57,13 +57,13 @@ func (db *DbProxy) DB() *sql.DB {
 
 func (db *DbProxy) CreateTable(name string, pk []string, columns [][]string) {
 	if !db.DoesTableExist(name) {
-		db.Query(true, F("create table %s(%s %s)", name, pk[0], pk[1]))
+		db.QueryPrepared(true, F("create table %s(%s %s)", name, pk[0], pk[1]))
 		util.Log(F("Created table '%s'", name))
 	}
 	pti := db.QueryColumnList(name)
 	for _, col := range columns {
 		if !util.Contains(pti, col[0]) {
-			db.Query(true, F("alter table %s add %s %s", name, col[0], col[1]))
+			db.QueryPrepared(true, F("alter table %s add %s %s", name, col[0], col[1]))
 			util.Log(F("Added column '%s.%s'", name, col[0]))
 		}
 	}
@@ -83,26 +83,15 @@ func (db *DbProxy) CreateTableStruct(name string, v interface{}) {
 }
 
 func (db *DbProxy) DoesTableExist(table string) bool {
-	q := db.Query(false, F("select name from sqlite_master where type='table' AND name='%s';", table))
+	q := db.QueryPrepared(false, F("select name from sqlite_master where type='table' AND name='%s';", table))
 	e := q.Next()
 	q.Close()
 	return e
 }
 
-func (db *DbProxy) Query(modify bool, q string) *sql.Rows {
-	if modify {
-		_, err := db.db.Exec(q)
-		util.CheckErr(err)
-		return nil
-	}
-	rows, err := db.db.Query(q)
-	util.CheckErr(err)
-	return rows
-}
-
 func (db *DbProxy) QueryTableInfo(table string) []PragmaTableInfo {
 	var result []PragmaTableInfo
-	rows := db.Query(false, F("pragma table_info(%s)", table))
+	rows := db.QueryPrepared(false, F("pragma table_info(%s)", table))
 	for rows.Next() {
 		var v PragmaTableInfo
 		rows.Scan(&v.CID, &v.Name, &v.Type, &v.NotNull, &v.HasDefault, &v.HasPK)
@@ -122,7 +111,7 @@ func (db *DbProxy) QueryColumnList(table string) []string {
 
 func (db *DbProxy) QueryNextID(table string) int64 {
 	result := int64(0)
-	rows := db.Query(false, F("select id from %s order by id desc limit 1", table))
+	rows := db.QueryPrepared(false, F("select id from %s order by id desc limit 1", table))
 	for rows.Next() {
 		rows.Scan(&result)
 	}
@@ -144,7 +133,7 @@ func (db *DbProxy) QueryPrepared(modify bool, q string, args ...interface{}) *sq
 }
 
 func (db *DbProxy) QueryDoSelectAll(table string) *sql.Rows {
-	return db.Query(false, F("select * from %s", table))
+	return db.QueryPrepared(false, F("select * from %s", table))
 }
 
 func (db *DbProxy) QueryDoSelect(table string, where string, search string) *sql.Rows {
@@ -160,7 +149,7 @@ func (db *DbProxy) QueryDoUpdate(table string, col string, value string, where s
 }
 
 func (db *DbProxy) QueryDoSelectAllOrder(table string, order string) *sql.Rows {
-	return db.Query(false, F("select * from %s order by %s desc", table, order))
+	return db.QueryPrepared(false, F("select * from %s order by %s desc", table, order))
 }
 
 func (db *DbProxy) QuerySelectFunc(table string, sfunc string, col string, haystack string, needle string) *sql.Rows {

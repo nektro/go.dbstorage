@@ -132,34 +132,6 @@ func (db *DbProxy) QueryPrepared(modify bool, q string, args ...interface{}) *sq
 	return rows
 }
 
-func (db *DbProxy) QueryDoSelectAll(table string) *sql.Rows {
-	return db.QueryPrepared(false, F("select * from %s", table))
-}
-
-func (db *DbProxy) QueryDoSelect(table string, where string, search string) *sql.Rows {
-	return db.QueryPrepared(false, F("select * from %s where %s = ?", table, where), search)
-}
-
-func (db *DbProxy) QueryDoSelectAnd(table string, where string, search string, where2 string, search2 string) *sql.Rows {
-	return db.QueryPrepared(false, F("select * from %s where %s = ? and %s = ?", table, where, where2), search, search2)
-}
-
-func (db *DbProxy) QueryDoUpdate(table string, col string, value string, where string, search string) {
-	db.QueryPrepared(true, F("update %s set %s = ? where %s = ?", table, col, where), value, search)
-}
-
-func (db *DbProxy) QueryDoSelectAllOrder(table string, order string) *sql.Rows {
-	return db.QueryPrepared(false, F("select * from %s order by %s desc", table, order))
-}
-
-func (db *DbProxy) QuerySelectFunc(table string, sfunc string, col string, haystack string, needle string) *sql.Rows {
-	return db.QueryPrepared(false, F("select %s(%s) from %s where %s = ?", sfunc, col, table, haystack), needle)
-}
-
-func (db *DbProxy) QueryDelete(table string, col string, search string) {
-	db.QueryPrepared(true, F("delete from %s where %s = ?", table, col), search)
-}
-
 func (db *DbProxy) DropTable(name string) {
 	db.QueryPrepared(true, "drop table if exists "+name)
 }

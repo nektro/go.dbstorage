@@ -32,6 +32,11 @@ type QueryBuilder interface {
 	Exe() *sql.Rows
 }
 
+// Executable is any object who represents a query that can be called on to produce a sql.Rows
+type Executable interface {
+	Exe() *sql.Rows
+}
+
 type Scannable interface {
 	Scan(rows *sql.Rows) Scannable
 }

@@ -267,6 +267,7 @@ func (qb *sQueryBuilder) Ins(table string, values ...interface{}) Executable {
 }
 
 func (qb *sQueryBuilder) Del(table string) QueryBuilder {
+	qb.m = true
 	qb.q = "delete from " + table
 	return qb
 }

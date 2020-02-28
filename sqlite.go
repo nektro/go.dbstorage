@@ -136,6 +136,17 @@ func (db *DbProxy) DropTable(name string) {
 	db.QueryPrepared(true, "drop table if exists "+name)
 }
 
+func (db *DbProxy) QueryRowCount(table string) int64 {
+	rows := db.Build().Se("count(*)").Fr(table).Exe()
+	defer rows.Close()
+	if !rows.Next() {
+		return -1
+	}
+	c := int64(0)
+	rows.Scan(&c)
+	return c
+}
+
 //
 
 //

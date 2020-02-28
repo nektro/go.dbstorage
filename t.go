@@ -13,6 +13,7 @@ type Database interface {
 	Build() QueryBuilder
 	QueryColumnList(table string) []string
 	QueryNextID(table string) int64
+	QueryRowCount(table string) int64
 	DropTable(name string)
 }
 

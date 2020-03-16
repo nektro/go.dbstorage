@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/nektro/go-util/arrays/stringsu"
 	"github.com/nektro/go-util/util"
 
 	. "github.com/nektro/go-util/alias"
@@ -62,7 +63,7 @@ func (db *DbProxy) CreateTable(name string, pk []string, columns [][]string) {
 	}
 	pti := db.QueryColumnList(name)
 	for _, col := range columns {
-		if !util.Contains(pti, col[0]) {
+		if !stringsu.Contains(pti, col[0]) {
 			db.QueryPrepared(true, F("alter table %s add %s %s", name, col[0], col[1]))
 			util.Log(F("Added column '%s.%s'", name, col[0]))
 		}

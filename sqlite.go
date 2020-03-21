@@ -3,6 +3,7 @@ package dbstorage
 import (
 	"bytes"
 	"database/sql"
+	"database/sql/driver"
 	"fmt"
 	"net/url"
 	"reflect"
@@ -153,14 +154,14 @@ func (db *DbProxy) QueryRowCount(table string) int64 {
 //
 
 type sQueryBuilder struct {
-	d *DbProxy    // db
-	q string      // query string
-	v []string    // values
-	m bool        // modify
-	w [][4]string // where's
-	o [][2]string // order's
-	l int64       // limit
-	f int64       // offset
+	d *DbProxy       // db
+	q string         // query string
+	v []driver.Value // values
+	m bool           // modify
+	w [][4]string    // where's
+	o [][2]string    // order's
+	l int64          // limit
+	f int64          // offset
 }
 
 func (db *DbProxy) Build() QueryBuilder {
@@ -212,7 +213,13 @@ func (qb *sQueryBuilder) Of(offset int64) QueryBuilder {
 
 func (qb *sQueryBuilder) Exe() *sql.Rows {
 	vals := []string{}
-	vals = append(vals, qb.v...)
+	for _, item := range qb.v {
+		if b, ok := item.(bool); ok {
+			vals = append(vals, strconv.Itoa(util.Btoi(b)))
+			continue
+		}
+		vals = append(vals, fmt.Sprintf("%v", item))
+	}
 	for i, item := range qb.w {
 		if item[3] == "false" {
 			if i == 0 {
@@ -273,7 +280,8 @@ func (qb *sQueryBuilder) Ins(table string, values ...interface{}) Executable {
 	qb.m = true
 	qb.q = qb.q + "insert into " + table + " values (" + strings.Join(strings.Split(strings.Repeat("?", len(values)), ""), ",") + ")"
 	for _, item := range values {
-		qb.v = append(qb.v, fmt.Sprintf("%v", item))
+		o, _ := driver.DefaultParameterConverter.ConvertValue(item)
+		qb.v = append(qb.v, o)
 	}
 	return qb
 }

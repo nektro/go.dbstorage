@@ -28,6 +28,7 @@ type QueryBuilder interface {
 	Of(offset int64) QueryBuilder
 	Up(table string, col string, value string) QueryBuilder
 	Ins(table string, values ...interface{}) Executable
+	InsI(table string, strct interface{}) Executable
 	Del(table string) QueryBuilder
 	Executable
 }

@@ -286,6 +286,17 @@ func (qb *sQueryBuilder) Ins(table string, values ...interface{}) Executable {
 	return qb
 }
 
+func (qb *sQueryBuilder) InsI(table string, strct interface{}) Executable {
+	v := reflect.ValueOf(strct).Elem()
+	t := v.Type()
+	atrs := []interface{}{}
+	for i := 0; i < t.NumField(); i++ {
+		sv := v.Field(i).Interface()
+		atrs = append(atrs, sv)
+	}
+	return qb.Ins(table, atrs...)
+}
+
 func (qb *sQueryBuilder) Del(table string) QueryBuilder {
 	qb.m = true
 	qb.q = "delete from " + table

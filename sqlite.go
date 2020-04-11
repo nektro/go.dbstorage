@@ -181,8 +181,12 @@ func (qb *sQueryBuilder) Fr(table string) QueryBuilder {
 	return qb
 }
 
-func (qb *sQueryBuilder) WR(col string, op string, value string, raw bool) QueryBuilder {
+func (qb *sQueryBuilder) WR(col string, op string, value string, raw bool, ags ...interface{}) QueryBuilder {
 	qb.w = append(qb.w, [4]string{col, op, value, strconv.FormatBool(raw)})
+	for _, item := range ags {
+		o, _ := driver.DefaultParameterConverter.ConvertValue(item)
+		qb.v = append(qb.v, o)
+	}
 	return qb
 }
 

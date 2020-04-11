@@ -20,7 +20,7 @@ type Database interface {
 type QueryBuilder interface {
 	Se(cols string) QueryBuilder
 	Fr(tabls string) QueryBuilder
-	WR(col string, op string, value string, raw bool) QueryBuilder
+	WR(col string, op string, value string, raw bool, ags ...interface{}) QueryBuilder
 	Wr(col string, op string, value string) QueryBuilder
 	Wh(col string, value string) QueryBuilder
 	Or(col string, order string) QueryBuilder

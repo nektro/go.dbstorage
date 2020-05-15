@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"sync"
 
-	"github.com/spf13/pflag"
+	"github.com/nektro/go-util/vflag"
 )
 
 var (
@@ -13,7 +13,7 @@ var (
 )
 
 func init() {
-	pflag.BoolVar(&StatementDebug, "dbstorage-debug-sql", false, "Enable this flag to print all executed SQL statements.")
+	vflag.BoolVar(&StatementDebug, "dbstorage-debug-sql", false, "Enable this flag to print all executed SQL statements.")
 }
 
 var (

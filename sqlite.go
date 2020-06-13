@@ -10,6 +10,7 @@ import (
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/nektro/go-util/arrays/stringsu"
 	"github.com/nektro/go-util/util"
@@ -31,17 +32,18 @@ type PragmaTableInfo struct {
 	HasPK      bool
 }
 
-func ConnectSqlite(path string) Database {
+func ConnectSqlite(path string) (Database, error) {
 	op := url.Values{}
 	op.Add("mode", "rwc")
 	op.Add("cache", "shared")
 	op.Add("_busy_timeout", "5000")
 	op.Add("_journal_mode", "OFF")
 	db, err := sql.Open("sqlite3", "file:"+path+"?"+op.Encode())
-	util.CheckErr(err)
+	if err != nil {
+		return nil, err
+	}
 	db.SetMaxOpenConns(1)
-	util.DieOnError(db.Ping())
-	return &DbProxy{db}
+	return &DbProxy{db}, db.Ping()
 }
 
 func (db *DbProxy) Ping() error {

@@ -1,6 +1,8 @@
 package dbstorage
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 // Database represents an active db connection
 type Database interface {
@@ -23,7 +25,6 @@ type QueryBuilder interface {
 	WR(col string, op string, value string, raw bool, ags ...interface{}) QueryBuilder
 	Wr(col string, op string, value string) QueryBuilder
 	Wh(col string, value string) QueryBuilder
-	Or(col string, order string) QueryBuilder
 	Lm(limit int64) QueryBuilder
 	Of(offset int64) QueryBuilder
 	Up(table string, col string, value string) QueryBuilder

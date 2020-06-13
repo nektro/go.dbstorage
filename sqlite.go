@@ -244,9 +244,10 @@ func (qb *sQueryBuilder) Exe() *sql.Rows {
 	}
 	if qb.l > 0 {
 		qb.q += " limit " + strconv.FormatInt(qb.l, 10)
-	}
-	if qb.f > 0 {
-		qb.q += " offset " + strconv.FormatInt(qb.f, 10)
+
+		if qb.f > 0 {
+			qb.q += " offset " + strconv.FormatInt(qb.f, 10)
+		}
 	}
 	iva := make([]interface{}, len(vals))
 	for i, v := range vals {

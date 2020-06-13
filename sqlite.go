@@ -14,9 +14,8 @@ import (
 	"github.com/nektro/go-util/arrays/stringsu"
 	"github.com/nektro/go-util/util"
 
-	. "github.com/nektro/go-util/alias"
-
 	_ "github.com/mattn/go-sqlite3"
+	. "github.com/nektro/go-util/alias"
 )
 
 type DbProxy struct {

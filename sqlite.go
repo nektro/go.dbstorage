@@ -87,9 +87,8 @@ func (db *DbProxy) CreateTableStruct(name string, v interface{}) {
 
 func (db *DbProxy) DoesTableExist(table string) bool {
 	q := db.QueryPrepared(false, F("select name from sqlite_master where type='table' AND name='%s';", table))
-	e := q.Next()
-	q.Close()
-	return e
+	defer q.Close()
+	return q.Next()
 }
 
 func (db *DbProxy) QueryTableInfo(table string) []PragmaTableInfo {

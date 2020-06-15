@@ -200,6 +200,11 @@ func (qb *sQueryBuilder) Wh(col string, value string) QueryBuilder {
 	return qb
 }
 
+func (qb *sQueryBuilder) Or(col string, order string) QueryBuilder {
+	qb.o = append(qb.o, [2]string{col, order})
+	return qb
+}
+
 func (qb *sQueryBuilder) Lm(limit int64) QueryBuilder {
 	qb.l = limit
 	return qb

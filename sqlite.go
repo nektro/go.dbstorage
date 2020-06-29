@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"database/sql"
 	"database/sql/driver"
+	"errors"
 	"fmt"
 	"net/url"
 	"reflect"
@@ -40,7 +41,7 @@ func ConnectSqlite(path string) (Database, error) {
 	op.Add("_journal_mode", "OFF")
 	db, err := sql.Open("sqlite3", "file:"+path+"?"+op.Encode())
 	if err != nil {
-		return nil, err
+		return nil, errors.New("sqlite: sql.Open: " + err.Error())
 	}
 	db.SetMaxOpenConns(1)
 	db.SetMaxIdleConns(0)

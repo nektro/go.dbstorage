@@ -80,3 +80,9 @@ func TestSqlite(t *testing.T) {
 	util.DieOnError(err)
 	DoTest(t, d)
 }
+
+func TestPostgres(t *testing.T) {
+	d, err := dbstorage.ConnectPostgres()
+	util.DieOnError(err)
+	DoTest(t, d)
+}

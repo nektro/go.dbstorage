@@ -86,3 +86,9 @@ func TestPostgres(t *testing.T) {
 	util.DieOnError(err)
 	DoTest(t, d)
 }
+
+func TestMysql(t *testing.T) {
+	d, err := dbstorage.ConnectMysql()
+	util.DieOnError(err)
+	DoTest(t, d)
+}

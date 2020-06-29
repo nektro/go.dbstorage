@@ -124,14 +124,17 @@ func (db *DbProxy) QueryNextID(table string) int64 {
 
 func (db *DbProxy) QueryPrepared(modify bool, q string, args ...interface{}) *sql.Rows {
 	stmt, err := db.db.Prepare(q)
-	util.CheckErr(err)
-	if modify {
-		_, err := stmt.Exec(args...)
-		util.CheckErr(err)
+	if err != nil {
 		return nil
 	}
-	rows, err := stmt.Query(args...)
-	util.CheckErr(err)
+	if modify {
+		stmt.Exec(args...)
+		return nil
+	}
+	rows, _ := stmt.Query(args...)
+	if err != nil {
+		return nil
+	}
 	return rows
 }
 
@@ -141,11 +144,12 @@ func (db *DbProxy) DropTable(name string) {
 
 func (db *DbProxy) QueryRowCount(table string) int64 {
 	rows := db.Build().Se("count(*)").Fr(table).Exe()
-	defer rows.Close()
-	if !rows.Next() {
+	if rows == nil {
 		return -1
 	}
+	defer rows.Close()
 	c := int64(0)
+	rows.Next()
 	rows.Scan(&c)
 	return c
 }

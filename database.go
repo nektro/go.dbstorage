@@ -26,4 +26,5 @@ type Inner interface {
 	QueryNextID(table string) int64
 	QueryRowCount(table string) int64
 	DropTable(name string)
+	DriverName() string
 }

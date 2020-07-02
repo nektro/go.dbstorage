@@ -57,6 +57,10 @@ func (db *mysqlDB) DB() *sql.DB {
 	return db.db
 }
 
+func (db *mysqlDB) DriverName() string {
+	return "mysql"
+}
+
 func (db *mysqlDB) CreateTable(name string, pk []string, columns [][]string) {
 	if !db.DoesTableExist(name) {
 		db.QueryPrepared(true, F("CREATE TABLE %s(%s %s)", name, pk[0], pk[1]))

@@ -16,10 +16,10 @@ const (
 )
 
 type TestRow struct {
-	ID    int64  `json:"id"`
-	Name  string `json:"name" sqlite:"text" postgres:"text" mysql:"text"`
-	Admin bool   `json:"admin" sqlite:"int" postgres:"int" mysql:"int"`
-	Age   int    `json:"age" sqlite:"int" postgres:"int" mysql:"int"`
+	ID       int64    `json:"id"`
+	Name     string   `json:"name" dbsorm:"1"`
+	Admin    bool     `json:"admin" dbsorm:"1"`
+	Age      int      `json:"age" dbsorm:"1"`
 }
 
 func RandomString(n int) string {

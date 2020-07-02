@@ -8,6 +8,7 @@ import (
 	"github.com/nektro/go-util/util"
 	"github.com/nektro/go-util/vflag"
 	dbstorage "github.com/nektro/go.dbstorage"
+	"github.com/nektro/go.etc/dbt"
 )
 
 const (
@@ -20,6 +21,7 @@ type TestRow struct {
 	Name     string   `json:"name" dbsorm:"1"`
 	Admin    bool     `json:"admin" dbsorm:"1"`
 	Age      int      `json:"age" dbsorm:"1"`
+	Birthday dbt.Time `json:"birthday" dbsorm:"1"`
 }
 
 func RandomString(n int) string {
@@ -44,7 +46,7 @@ func DoTest(t *testing.T, db dbstorage.Database) {
 	for i := 0; i < 500; i++ {
 		dbstorage.InsertsLock.Lock()
 		id := db.QueryNextID(TableName)
-		nr := &TestRow{id, RandomString(12), id == 1, rand.Intn(25)}
+		nr := &TestRow{id, RandomString(12), id == 1, rand.Intn(25), dbt.Time(time.Now())}
 		db.Build().InsI(TableName, nr).Exe()
 		dbstorage.InsertsLock.Unlock()
 	}

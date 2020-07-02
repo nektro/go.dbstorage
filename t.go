@@ -4,21 +4,6 @@ import (
 	"database/sql"
 )
 
-// Database represents an active db connection
-type Database interface {
-	Ping() error
-	Close() error
-	DB() *sql.DB
-	CreateTable(name string, pk []string, columns [][]string)
-	CreateTableStruct(name string, v interface{})
-	DoesTableExist(table string) bool
-	Build() QueryBuilder
-	QueryColumnList(table string) []string
-	QueryNextID(table string) int64
-	QueryRowCount(table string) int64
-	DropTable(name string)
-}
-
 type QueryBuilder interface {
 	Se(cols string) QueryBuilder
 	Fr(tabls string) QueryBuilder

@@ -74,22 +74,9 @@ func (db *postgresDB) CreateTable(name string, pk []string, columns [][]string) 
 	for _, col := range columns {
 		if !stringsu.Contains(pti, col[0]) {
 			db.QueryPrepared(true, F("ALTER TABLE %s ADD COLUMN %s %s", name, col[0], col[1]))
-		}
-	}
-}
-
-func (db *postgresDB) CreateTableStruct(name string, v interface{}) {
-	t := reflect.TypeOf(v)
-	cols := [][]string{}
-	for i := 0; i < t.NumField(); i++ {
-		f := t.Field(i)
-		g := f.Tag.Get("postgres")
-		if len(g) > 0 {
-			cols = append(cols, []string{f.Tag.Get("json"), g})
 			util.Log(F("Added column '%s.%s'", name, col[0]))
 		}
 	}
-	db.CreateTable(name, []string{"id", "BIGINT PRIMARY KEY NOT NULL"}, cols)
 }
 
 func (db *postgresDB) DoesTableExist(table string) bool {

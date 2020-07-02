@@ -70,22 +70,9 @@ func (db *DbProxy) CreateTable(name string, pk []string, columns [][]string) {
 	for _, col := range columns {
 		if !stringsu.Contains(pti, col[0]) {
 			db.QueryPrepared(true, F("alter table %s add %s %s", name, col[0], col[1]))
-		}
-	}
-}
-
-func (db *DbProxy) CreateTableStruct(name string, v interface{}) {
-	t := reflect.TypeOf(v)
-	cols := [][]string{}
-	for i := 0; i < t.NumField(); i++ {
-		f := t.Field(i)
-		g := f.Tag.Get("sqlite")
-		if len(g) > 0 {
-			cols = append(cols, []string{f.Tag.Get("json"), g})
 			util.Log(F("Added column '%s.%s'", name, col[0]))
 		}
 	}
-	db.CreateTable(name, []string{"id", "bigint primary key"}, cols)
 }
 
 func (db *DbProxy) DoesTableExist(table string) bool {

@@ -7,13 +7,15 @@ import (
 	"github.com/nektro/go-util/vflag"
 )
 
+// flag vars
 var (
-	// StatementDebug - Enable this flag to print all executed SQL statements.
 	StatementDebug bool
+	DebugVerbose   bool
 )
 
 func init() {
 	vflag.BoolVar(&StatementDebug, "dbstorage-debug-sql", false, "Enable this flag to print all executed SQL statements.")
+	vflag.BoolVar(&DebugVerbose, "dbstorage-debug-verbose", false, "Enabled this flag to inlcude binded values in logs.")
 }
 
 var (

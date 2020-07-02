@@ -69,6 +69,31 @@ func (db *mysqlDB) IntPrimaryKey() string {
 	return "BIGINT NOT NULL PRIMARY KEY"
 }
 
+func (db *mysqlDB) TypeForType(t reflect.Type) string {
+	switch t.Name() {
+	case "string":
+		return "text"
+	case "bool", "int8":
+		return "TINYINT"
+	case "int16":
+		return "SMALLINT"
+	case "int32", "int":
+		return "INT"
+	case "int64":
+		return "BIGINT"
+	case "float32":
+		return "FLOAT"
+	case "float64":
+		return "DOUBLE"
+	}
+	dv, ok := reflect.New(t).Interface().(driver.Valuer)
+	if ok {
+		v, _ := dv.Value()
+		return db.TypeForType(reflect.TypeOf(v))
+	}
+	return ""
+}
+
 func (db *mysqlDB) CreateTable(name string, pk []string, columns [][]string) {
 	if !db.DoesTableExist(name) {
 		db.QueryPrepared(true, F("CREATE TABLE %s(%s %s)", name, pk[0], pk[1]))

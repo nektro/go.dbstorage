@@ -29,4 +29,5 @@ type Inner interface {
 	DriverName() string
 	TagName() string
 	IntPrimaryKey() string
+	TypeForType(reflect.Type) string
 }

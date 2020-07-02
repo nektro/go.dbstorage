@@ -77,6 +77,29 @@ func (db *postgresDB) IntPrimaryKey() string {
 	return "BIGINT PRIMARY KEY NOT NULL"
 }
 
+func (db *postgresDB) TypeForType(t reflect.Type) string {
+	switch t.Name() {
+	case "string":
+		return "text"
+	case "bool", "int8", "int16":
+		return "smallint"
+	case "int", "int32":
+		return "int"
+	case "int64":
+		return "bigint"
+	case "float32":
+		return "real"
+	case "float64":
+		return "double precision"
+	}
+	dv, ok := reflect.New(t).Interface().(driver.Valuer)
+	if ok {
+		v, _ := dv.Value()
+		return db.TypeForType(reflect.TypeOf(v))
+	}
+	return ""
+}
+
 func (db *postgresDB) CreateTable(name string, pk []string, columns [][]string) {
 	if !db.DoesTableExist(name) {
 		db.QueryPrepared(true, F("CREATE TABLE %s(%s %s)", name, pk[0], pk[1]))

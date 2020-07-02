@@ -73,6 +73,23 @@ func (db *DbProxy) IntPrimaryKey() string {
 	return "bigint primary key"
 }
 
+func (db *DbProxy) TypeForType(t reflect.Type) string {
+	switch t.Name() {
+	case "string":
+		return "text"
+	case "int", "int8", "int16", "int32", "int64":
+		return "int"
+	case "bool":
+		return "tinyint"
+	}
+	dv, ok := reflect.New(t).Interface().(driver.Valuer)
+	if ok {
+		v, _ := dv.Value()
+		return db.TypeForType(reflect.TypeOf(v))
+	}
+	return ""
+}
+
 func (db *DbProxy) CreateTable(name string, pk []string, columns [][]string) {
 	if !db.DoesTableExist(name) {
 		db.QueryPrepared(true, F("create table %s(%s %s)", name, pk[0], pk[1]))

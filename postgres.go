@@ -73,6 +73,10 @@ func (db *postgresDB) TagName() string {
 	return "postgres"
 }
 
+func (db *postgresDB) IntPrimaryKey() string {
+	return "BIGINT PRIMARY KEY NOT NULL"
+}
+
 func (db *postgresDB) CreateTable(name string, pk []string, columns [][]string) {
 	if !db.DoesTableExist(name) {
 		db.QueryPrepared(true, F("CREATE TABLE %s(%s %s)", name, pk[0], pk[1]))

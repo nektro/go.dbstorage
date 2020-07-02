@@ -28,4 +28,5 @@ type Inner interface {
 	DropTable(name string)
 	DriverName() string
 	TagName() string
+	IntPrimaryKey() string
 }

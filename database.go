@@ -27,4 +27,5 @@ type Inner interface {
 	QueryRowCount(table string) int64
 	DropTable(name string)
 	DriverName() string
+	TagName() string
 }

@@ -65,6 +65,10 @@ func (db *DbProxy) DriverName() string {
 	return "sqlite"
 }
 
+func (db *DbProxy) TagName() string {
+	return "sqlite"
+}
+
 func (db *DbProxy) CreateTable(name string, pk []string, columns [][]string) {
 	if !db.DoesTableExist(name) {
 		db.QueryPrepared(true, F("create table %s(%s %s)", name, pk[0], pk[1]))

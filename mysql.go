@@ -42,7 +42,7 @@ func ConnectMysql() (Database, error) {
 	db.SetMaxOpenConns(1)
 	db.SetMaxIdleConns(0)
 	db.SetConnMaxLifetime(time.Second)
-	return &mysqlDB{db}, db.Ping()
+	return &Outer{&mysqlDB{db}}, db.Ping()
 }
 
 func (db *mysqlDB) Ping() error {

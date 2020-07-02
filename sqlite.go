@@ -46,7 +46,7 @@ func ConnectSqlite(path string) (Database, error) {
 	db.SetMaxOpenConns(1)
 	db.SetMaxIdleConns(0)
 	db.SetConnMaxLifetime(time.Second)
-	return &DbProxy{db}, db.Ping()
+	return &Outer{&DbProxy{db}}, db.Ping()
 }
 
 func (db *DbProxy) Ping() error {

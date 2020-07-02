@@ -50,7 +50,7 @@ func ConnectPostgres() (Database, error) {
 	db.SetMaxOpenConns(1)
 	db.SetMaxIdleConns(0)
 	db.SetConnMaxLifetime(time.Second)
-	return &postgresDB{db}, db.Ping()
+	return &Outer{&postgresDB{db}}, db.Ping()
 }
 
 func (db *postgresDB) Ping() error {

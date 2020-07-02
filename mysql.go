@@ -60,13 +60,12 @@ func (db *mysqlDB) DB() *sql.DB {
 func (db *mysqlDB) CreateTable(name string, pk []string, columns [][]string) {
 	if !db.DoesTableExist(name) {
 		db.QueryPrepared(true, F("CREATE TABLE %s(%s %s)", name, pk[0], pk[1]))
-		// util.Log(F("Created table '%s'", name))
+		util.Log(F("Created table '%s'", name))
 	}
 	pti := db.QueryColumnList(name)
 	for _, col := range columns {
 		if !stringsu.Contains(pti, col[0]) {
 			db.QueryPrepared(true, F("ALTER TABLE %s ADD %s %s", name, col[0], col[1]))
-			// util.Log(F("Added column '%s.%s'", name, col[0]))
 		}
 	}
 }
@@ -79,6 +78,7 @@ func (db *mysqlDB) CreateTableStruct(name string, v interface{}) {
 		g := f.Tag.Get("mysql")
 		if len(g) > 0 {
 			cols = append(cols, []string{f.Tag.Get("json"), g})
+			util.Log(F("Added column '%s.%s'", name, col[0]))
 		}
 	}
 	db.CreateTable(name, []string{"id", "BIGINT NOT NULL PRIMARY KEY"}, cols)

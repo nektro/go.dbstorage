@@ -64,13 +64,12 @@ func (db *DbProxy) DB() *sql.DB {
 func (db *DbProxy) CreateTable(name string, pk []string, columns [][]string) {
 	if !db.DoesTableExist(name) {
 		db.QueryPrepared(true, F("create table %s(%s %s)", name, pk[0], pk[1]))
-		// util.Log(F("Created table '%s'", name))
+		util.Log(F("Created table '%s'", name))
 	}
 	pti := db.QueryColumnList(name)
 	for _, col := range columns {
 		if !stringsu.Contains(pti, col[0]) {
 			db.QueryPrepared(true, F("alter table %s add %s %s", name, col[0], col[1]))
-			// util.Log(F("Added column '%s.%s'", name, col[0]))
 		}
 	}
 }
@@ -83,6 +82,7 @@ func (db *DbProxy) CreateTableStruct(name string, v interface{}) {
 		g := f.Tag.Get("sqlite")
 		if len(g) > 0 {
 			cols = append(cols, []string{f.Tag.Get("json"), g})
+			util.Log(F("Added column '%s.%s'", name, col[0]))
 		}
 	}
 	db.CreateTable(name, []string{"id", "bigint primary key"}, cols)

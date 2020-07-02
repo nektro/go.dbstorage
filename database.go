@@ -2,7 +2,6 @@ package dbstorage
 
 import (
 	"database/sql"
-	"fmt"
 	"reflect"
 
 	"github.com/nektro/go-util/util"
@@ -53,7 +52,6 @@ func (db *Outer) CreateTableStruct(name string, v interface{}) {
 			g := db.TypeForType(vfi)
 			if len(g) > 0 {
 				cols = append(cols, []string{ftj, g})
-				fmt.Println("dbsorm:", ftj, g)
 				continue
 			}
 			util.DieOnError(E("dbstorage: unknown struct field type:"), F("%v", vfi), ftj)

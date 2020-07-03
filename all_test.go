@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	TableName   = "new_tablee"
+	TableName   = "New_Tablee"
 	letterBytes = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
 

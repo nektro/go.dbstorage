@@ -115,6 +115,7 @@ func (db *postgresDB) CreateTable(name string, pk []string, columns [][]string) 
 }
 
 func (db *postgresDB) DoesTableExist(table string) bool {
+	table = strings.ToLower(table)
 	// https://www.postgresql.org/docs/9.5/infoschema-tables.html
 	q := db.QueryPrepared(false, F("SELECT * FROM information_schema.tables WHERE table_name = '%s'", table))
 	if q == nil {
@@ -125,6 +126,7 @@ func (db *postgresDB) DoesTableExist(table string) bool {
 }
 
 func (db *postgresDB) QueryColumnList(table string) []string {
+	table = strings.ToLower(table)
 	var result []string
 	// https://www.postgresql.org/docs/9.5/infoschema-columns.html
 	rows := db.QueryPrepared(false, F("SELECT column_name FROM information_schema.columns WHERE table_name = '%s'", table))

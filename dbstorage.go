@@ -30,14 +30,20 @@ func QueryHasRows(query *sql.Rows) bool {
 	return b
 }
 
+func ScanStream(qb QueryBuilder, s Scannable, f func(Scannable)) {
+	rows := qb.Exe()
+	defer rows.Close()
+	for rows.Next() {
+		f(s.Scan(rows))
+	}
+}
+
 // ScanAll scans all possible values of a QueryBuilder into an array based on template Scannable.
 func ScanAll(qb QueryBuilder, s Scannable) []Scannable {
 	result := []Scannable{}
-	rows := qb.Exe()
-	for rows.Next() {
-		result = append(result, s.Scan(rows))
-	}
-	rows.Close()
+	ScanStream(qb, s, func(r Scannable) {
+		result = append(result, r)
+	})
 	return result
 }
 
